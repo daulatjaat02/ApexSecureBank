@@ -63,36 +63,63 @@ const inputClosePin = document.querySelector(".form__input--pin");
 
 /////////////////////////////////////////////////
 
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
   containerMovements.innerHTML = "";
-  movements.forEach(function (mov, i) {
+
+  let movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+
+  movs.forEach(function (mov, i) {
     let type = mov > 0 ? "deposit" : "withdrawal";
     let html = `
         <div class="movements__row">
           <div class="movements__type movements__type--${type}">${
       i + 1
     } ${type} </div>
-          <div class="movements__value">${mov}</div>
+          <div class="movements__value">${mov}₹</div>
         </div>`;
     containerMovements.insertAdjacentHTML("afterbegin", html);
   });
 };
-displayMovements(account1.movements);
+// displayMovements(account1.movements);
+
+// balance
+let calcDisplayBalance = function (acc) {
+  acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
+  labelBalance.textContent = `${acc.balance} ₹ `;
+};
+// calcDisplayBalance(account1.movements);
+
+// console.log(account1.movements);
+// In
+let calcDisplaySummery = function (acc) {
+  // inocome
+  let incomes = acc.movements
+    .filter((mov) => mov > 0)
+    .reduce((acc, mov) => acc + mov, 0);
+  // console.log(incomes);
+  labelSumIn.textContent = `${incomes}₹ `;
+
+  // outcome
+  let outcomes = acc.movements
+    .filter((mov) => mov < 0)
+    .reduce((acc, mov) => acc - mov, 0);
+  // console.log(outcomes);
+  labelSumOut.textContent = `${outcomes}₹`;
+
+  // interest
+  let interest = acc.movements
+    .filter((mov) => mov > 0)
+    .map((deposits) => (deposits * acc.interestRate) / 100)
+    .filter((int, i, arr) => {
+      // console.log(arr);
+      return int >= 1;
+    })
+    .reduce((acc, int) => acc + int, 0);
+  labelSumInterest.textContent = `${interest}₹ `;
+};
+// calcDisplaySummery(account1.movements);
 
 // Computing UserNames
-
-// let createUserName = function (accs) {
-//   accs.forEach(function (acc) {
-//     acc.userName = acc.owner
-//       .toLowerCase()
-//       .split(" ")
-//       .map((name) => name[0])
-//       .join("");
-//   });
-// };
-// console.log(createUserName(accounts));
-// console.log(accounts);
-
 let createUserName = function (accs) {
   accs.forEach(function (acc) {
     acc.userName = acc.owner
@@ -103,4 +130,112 @@ let createUserName = function (accs) {
   });
 };
 createUserName(accounts);
-console.log(accounts);
+console.log(account1);
+/////////////////////////////////////////
+
+function updateUI(acc) {
+  // Display movements
+  displayMovements(acc.movements);
+  // balance
+  calcDisplayBalance(acc);
+  // Display summary
+  calcDisplaySummery(acc);
+}
+// Implementing the Login
+// Event handlers
+let currentAccount;
+btnLogin.addEventListener("click", function (e) {
+  // Prevent form from submitting
+  e.preventDefault();
+
+  currentAccount = accounts.find(
+    (acc) => acc.userName === inputLoginUsername.value
+  );
+  // Check if currentAccount is defined and the pin is correct
+  if (currentAccount && currentAccount.pin === Number(inputLoginPin.value)) {
+    // Display the welcome message
+    labelWelcome.textContent = `Welcome back ${
+      currentAccount.owner.split(" ")[0]
+    }`;
+    // Clear the input fields
+    inputLoginUsername.value = inputLoginPin.value = "";
+    inputLoginPin.blur();
+    // Display the UI
+    containerApp.style.opacity = 100;
+    updateUI(currentAccount);
+  } else {
+    // Handle incorrect login (for example, show an error message)
+    alert("Incorrect username or pin");
+  }
+});
+
+// Implementing transfers
+btnTransfer.addEventListener("click", function (e) {
+  e.preventDefault();
+  const amount = Number(inputTransferAmount.value);
+  const receiverAcc = accounts.find(
+    (acc) => acc.userName === inputTransferTo.value
+  );
+
+  // check the balance has enough to send
+  if (
+    amount > 0 &&
+    receiverAcc &&
+    currentAccount.balance >= amount &&
+    receiverAcc.userName !== currentAccount.userName
+  ) {
+    // Doing the transfer
+    currentAccount.movements.push(-amount);
+    receiverAcc.movements.push(amount);
+    // Update UI
+    updateUI(currentAccount);
+  }
+  inputTransferAmount.value = inputTransferTo.value = "";
+});
+
+// loan button
+btnLoan.addEventListener("click", (e) => {
+  e.preventDefault();
+  let amount = Number(inputLoanAmount.value);
+  if (
+    amount > 0 &&
+    currentAccount.movements.some((mov) => mov >= amount * 0.1)
+  ) {
+    // add movements
+    currentAccount.movements.push(amount);
+
+    // Update UI
+    updateUI(currentAccount);
+  }
+  inputLoanAmount.value = "";
+});
+
+// logOut button
+btnClose.addEventListener("click", (e) => {
+  e.preventDefault();
+  // console.log("close");
+  if (
+    inputCloseUsername.value === currentAccount.userName &&
+    Number(inputClosePin.value) === currentAccount.pin
+  ) {
+    let index = accounts.findIndex(
+      (acc) => acc.userName === currentAccount.userName
+    );
+    console.log(index);
+
+    // Delete Account
+    accounts.splice(index, 1);
+
+    // Hide UI
+    containerApp.style.opacity = 0;
+  }
+  inputCloseUsername.value = inputClosePin.value = "";
+});
+
+let sorted = false;
+// sort button
+btnSort.addEventListener("click", (e) => {
+  e.preventDefault();
+  displayMovements(currentAccount.movements, !sorted);
+  sorted = !sorted;
+});
