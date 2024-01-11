@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link rel="icon " type="icon" href="icon.png" />
+    <link rel="icon " type="icon" href="favicon-32x32.png" />
 
     <link
       href="https://fonts.googleapis.com/css?family=Poppins:400,500,600&display=swap"
@@ -12,13 +12,13 @@
     />
 
     <link rel="stylesheet" href="style.css" />
-    <title>FN Bank</title>
+    <title>ASB Bank</title>
   </head>
-  <body>
+  <body class="popup-open">
     <!-- TOP NAVIGATION -->
     <nav>
       <p class="welcome">Log in to get started</p>
-      <img src="logo.png" alt="Logo" class="logo" />
+      <img src="main.png" alt="Logo" class="logo" />
       <form class="login">
         <input
           type="text"
@@ -35,7 +35,6 @@
         <button class="login__btn">&rarr;</button>
       </form>
     </nav>
-
     <main class="app">
       <!-- BALANCE -->
       <div class="balance">
@@ -119,10 +118,37 @@
       </p>
     </main>
 
-    <!-- <footer>
-      &copy; by Jonas Schmedtmann. Don't claim as your own :)
-    </footer> -->
-
+    <section>
+      <div class="modal hidden">
+        <div class="popup" id="popup">
+          <span class="close" onclick="hidePopup()">&times;</span>
+          <h3></h3>
+          <h1>
+            Welcome to Apex Secure Bank – Your Secure Financial Playground!
+          </h1>
+          <p class="popupText">
+            Use the provided account details (Account 1, Account 2) exclusively
+            for this banking environment.
+            <span class="user">
+              <span class="account">Account 1</span> - Username : dj ,
+              <span class="pin">PIN : 1111</span></span
+            >
+            <span class="user">
+              <span class="account">Account 2</span> - Username : mk,<span
+                class="pin"
+              >
+                PIN : 2222</span
+              ></span
+            >
+          </p>
+          <h3>
+            Thank you for choosing Apex Secure Bank. Your financial experience
+            is our top priority!
+          </h3>
+        </div>
+      </div>
+      <div class="overlay"></div>
+    </section>
     <script src="script.js"></script>
   </body>
 </html>

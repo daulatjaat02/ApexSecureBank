@@ -1,16 +1,7 @@
 "use strict";
 
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// BANKIST APP
-
-/////////////////////////////////////////////////
-// Data
-
-// DIFFERENT DATA! Contains movement dates, currency and locale
-
 const account1 = {
-  owner: "Jonas Schmedtmann",
+  owner: "Daulat Jajra",
   movements: [200, 455.23, -306.5, 25000, -642.21, -133.9, 79.97, 1300],
   interestRate: 1.2, // %
   pin: 1111,
@@ -30,7 +21,7 @@ const account1 = {
 };
 
 const account2 = {
-  owner: "Jessica Davis",
+  owner: "Muskan Khan",
   movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
   interestRate: 1.5,
   pin: 2222,
@@ -98,13 +89,6 @@ let formatMovemetnDate = (date, locale) => {
   if (daysPassed === 0) return "Today";
   if (daysPassed === 1) return "Yesterday";
   if (daysPassed <= 7) return `${daysPassed} days ago`;
-  // else {
-  // day/ month/ year
-  //   let day = `${date.getDate()}`.padStart(2, 0);
-  //   let month = `${date.getMonth() + 1}`.padStart(2, 0);
-  //   let year = date.getFullYear();
-  //   return `${day}/${month}/${year}`;
-  // }
   return new Intl.DateTimeFormat(locale).format(date);
 };
 
@@ -244,21 +228,11 @@ btnLogin.addEventListener("click", function (e) {
       hour: "numeric",
       minute: "numeric",
     };
-    // let locale = navigator.language;
-    // console.log(locale);
+
     labelDate.textContent = new Intl.DateTimeFormat(
       currentAccount.locale,
       options
     ).format(now);
-
-    // current date and time
-    // let day = `${now.getDate()}`.padStart(2, 0);
-    // let month = `${now.getMonth() + 1}`.padStart(2, 0);
-    // let year = now.getFullYear();
-    // let hours = `${now.getHours()}`.padStart(2, 0);
-    // let minutes = `${now.getMinutes()}`.padStart(2, 0);
-    // labelDate.textContent = `${day}/${month}/${year},  ${hours}:${minutes}`;
-    // // Clear input fields
 
     inputLoginUsername.value = inputLoginPin.value = "";
     inputLoginPin.blur();
@@ -268,6 +242,8 @@ btnLogin.addEventListener("click", function (e) {
     timer = startLogoutTimer();
     // Update UI
     updateUI(currentAccount);
+  } else {
+    alert("Sorry! Invalid User & Pin \n You should Referes");
   }
 });
 
@@ -354,22 +330,24 @@ btnSort.addEventListener("click", function (e) {
   displayMovements(currentAccount, !sorted);
   sorted = !sorted;
 });
+// Window popup
+let overlay = document.querySelector(".overlay");
+function showPopup() {
+  popup.style.display = "block";
+  overlay.classList.add("overlay");
+}
+
+function hidePopup() {
+  popup.style.display = "none";
+  overlay.classList.remove("overlay");
+}
+showPopup();
+overlay.addEventListener("click", function (e) {
+  hidePopup();
+});
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Escape") {
+    hidePopup();
+  }
+});
 // ///////////////////////////////////////////////////////////////////////////////////////
-
-// let num = 4683589875.897;
-
-// let options = {
-//   // style: "unit",
-//   // style: "percent",
-//   style: "currency",
-//   unit: "celsius",
-//   currency: "EUR",
-//   // useGrouping: false,
-// };
-// console.log("US :", new Intl.NumberFormat("en-US", options).format(num));
-// console.log("Germony :", new Intl.NumberFormat("de-DE", options).format(num));
-// console.log("SYria :", new Intl.NumberFormat("ar-SY", options).format(num));
-// console.log(
-//   "Navigator.language :",
-//   new Intl.NumberFormat(navigator.language, options).format(num)
-// );
