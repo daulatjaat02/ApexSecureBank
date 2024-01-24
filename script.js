@@ -196,11 +196,11 @@ let startLogoutTimer = () => {
 // Event handlers
 let currentAccount, timer;
 
-// // Fake Always logged in
-// currentAccount = account1;
-// updateUI(currentAccount);
-// containerApp.style.opacity = "100";
-// // ////////
+// Fake Always logged in
+currentAccount = account1;
+updateUI(currentAccount);
+containerApp.style.opacity = "100";
+// ////////
 
 //
 btnLogin.addEventListener("click", function (e) {
@@ -244,6 +244,7 @@ btnLogin.addEventListener("click", function (e) {
     updateUI(currentAccount);
   } else {
     alert("Sorry! Invalid User & Pin \n You should Referes");
+    // updateUI(currentAccount);
   }
 });
 
