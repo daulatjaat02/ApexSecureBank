@@ -298,8 +298,6 @@ h2 {
   font-weight: 600;
 }
 
-/* Your existing CSS styles */
-
 .popup {
   display: none;
   position: fixed;
@@ -420,7 +418,6 @@ h2 {
     justify-content: space-between;
   }
 
-  /* Summary */
   .summary {
     gap: 10px;
     flex-direction: row;
@@ -437,36 +434,24 @@ h2 {
     margin: 0.5rem 0;
   }
 
-  /* Operations */
   .operation {
     padding: 2rem;
     margin: 0 5px;
   }
 
-  /* Forms */
   .form__input {
     margin-bottom: 1rem;
   }
-  /* Logout Timer */
   .logout-timer {
     margin-top: 1rem;
   }
 
-  /* Popup */
   .popup {
     max-width: 80%;
   }
 
-  .popupText,
-  .popupText .user,
-  .popupText .account,
-  .popupText .pin {
+  .popupText {
     font-size: 14px;
-  }
-
-  /* Overlay */
-  .overlay {
-    height: 100vh;
   }
 
   .summary__value,
@@ -483,6 +468,26 @@ h2 {
   }
 
   .popup {
+    font-size: 8px;
+  }
+
+  .popup .close {
+    top: -9px;
+    right: 6px;
+  }
+
+  .overlay {
+    height: 239vh;
+  }
+  .popupText {
+    font-size: 9px;
+    gap: 7px;
+    margin: 9px 0;
+  }
+  .account,
+  .user,
+  .pin {
     font-size: 12px;
+    gap: 9px;
   }
 }
