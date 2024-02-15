@@ -282,6 +282,8 @@ const closefn = function (e) {
       (acc) => acc.username === currentAccount.username
     );
     accounts.splice(index, 1);
+    sessionStorage.removeItem("loggedIn");
+    sessionStorage.removeItem("username");
     containerApp.style.opacity = "0";
   }
 };
