@@ -31,6 +31,59 @@ nav {
   font-size: 1.9rem;
   font-weight: 500;
 }
+.welcomeQus,
+.transfer {
+  position: relative;
+}
+
+.welcomeQus::after {
+  content: "1. (username : dj, pin : 1111) 2. (username : mk, pin : 2222)";
+  font-family: "Poppins", sans-serif;
+  font-weight: 100;
+  font-size: 1rem;
+  visibility: hidden;
+  font-size: 1.2rem;
+  background-color: rgb(72, 185, 129);
+  color: rgb(0, 0, 0);
+  text-align: center;
+  border-radius: 5px;
+  position: absolute;
+  z-index: 1;
+  top: 100%;
+  left: 60%;
+  margin-left: -150px;
+  padding: 0.5rem 0.5rem;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.transfer::after {
+  content: "Transfer to: mk / dj";
+  visibility: hidden;
+  font-family: "Poppins", sans-serif;
+  font-weight: 100;
+  font-size: 1rem;
+  font-size: 1.2rem;
+  background-color: rgb(72, 185, 129);
+  color: rgb(0, 0, 0);
+  text-align: center;
+  padding: 5px;
+  border-radius: 5px;
+  position: absolute;
+  z-index: 1;
+  top: 100%;
+  left: 60%;
+  margin-left: -150px;
+  padding: 0.5rem 0.5rem;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.welcomeQus:hover::after,
+.transfer:hover::after {
+  visibility: visible;
+  opacity: 1;
+}
 
 .logo {
   height: 12.25rem;
@@ -78,7 +131,7 @@ nav {
 .btn--sort:hover,
 .btn--sort:focus {
   outline: none;
-  color: #777;
+  color: hsl(0, 0%, 100%);
 }
 
 /* MAIN */
@@ -90,7 +143,6 @@ nav {
   grid-template-columns: 4fr 3fr;
   grid-template-rows: auto repeat(3, 15rem) auto;
   gap: 2rem;
-
   opacity: 0;
   transition: all 1s;
 }
@@ -298,59 +350,6 @@ h2 {
   font-weight: 600;
 }
 
-.popup {
-  display: none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  z-index: 100;
-}
-
-.popup .close {
-  position: absolute;
-  top: -15px;
-  right: 13px;
-  cursor: pointer;
-  font-size: 5em;
-  color: red;
-}
-
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 139vh;
-  background-color: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(3px);
-  z-index: 5;
-}
-.popupText {
-  font-size: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin: 15px 0;
-}
-.account {
-  font-size: 15px;
-}
-.user {
-  font-size: 18px;
-  color: #ff0071;
-  display: flex;
-  gap: 21px;
-}
-.pin {
-  font-size: 16px;
-  color: #531149;
-}
-
 /* //////////////////////////////////////////////////////////////// */
 
 /* Media Query for smaller screens */
@@ -445,15 +444,6 @@ h2 {
   .logout-timer {
     margin-top: 1rem;
   }
-
-  .popup {
-    max-width: 80%;
-  }
-
-  .popupText {
-    font-size: 14px;
-  }
-
   .summary__value,
   .btn--sort {
     font-size: 1.2rem;
@@ -465,29 +455,5 @@ h2 {
 
   .timer {
     font-size: 1rem;
-  }
-
-  .popup {
-    font-size: 8px;
-  }
-
-  .popup .close {
-    top: -9px;
-    right: 6px;
-  }
-
-  .overlay {
-    height: 239vh;
-  }
-  .popupText {
-    font-size: 9px;
-    gap: 7px;
-    margin: 9px 0;
-  }
-  .account,
-  .user,
-  .pin {
-    font-size: 12px;
-    gap: 9px;
   }
 }

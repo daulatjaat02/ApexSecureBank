@@ -12,22 +12,36 @@
     />
 
     <link rel="stylesheet" href="style.css" />
+    <script
+      defer
+      src="https://kit.fontawesome.com/155e93c409.js"
+      crossorigin="anonymous"
+    ></script>
+    <script defer src="script.js"></script>
     <title>ASB Bank</title>
   </head>
   <body class="popup-open">
     <!-- TOP NAVIGATION -->
     <nav>
-      <p class="welcome">Log in to get started</p>
+      <p
+        class="welcome"
+        data-tooltip-text="1.(Username : dj, pin : 1111)  
+       2. (Username : mk, pin : 2222)"
+      >
+        Log in to get started
+        <i class="fas fa-question-circle welcomeQus"> </i>
+      </p>
+
       <img src="main.png" alt="Logo" class="logo" />
       <form class="login">
         <input
           type="text"
           placeholder="user"
           class="login__input login__input--user"
+          autofocus
         />
-        <!-- In practice, use type="password" -->
         <input
-          type="text"
+          type="password"
           placeholder="PIN"
           maxlength="4"
           class="login__input login__input--pin"
@@ -76,7 +90,11 @@
 
       <!-- OPERATION: TRANSFERS -->
       <div class="operation operation--transfer">
-        <h2>Transfer money</h2>
+        <h2 class="transferMoney" data-tooltip-text="Transfer to: mk">
+          Transfer money
+          <i class="fas fa-question-circle transfer"> </i>
+        </h2>
+
         <form class="form form--transfer">
           <input type="text" class="form__input form__input--to" />
           <input type="number" class="form__input form__input--amount" />
@@ -117,37 +135,5 @@
         You will be logged out in <span class="timer">05:00</span>
       </p>
     </main>
-    <section>
-      <div class="modal hidden">
-        <div class="popup" id="popup">
-          <span class="close" onclick="hidePopup()">&times;</span>
-          <h3></h3>
-          <h1>
-            Welcome to Apex Secure Bank – Your Secure Financial Playground!
-          </h1>
-          <p class="popupText">
-            Use the provided account details (Account 1, Account 2) exclusively
-            for this banking environment.
-            <span class="user">
-              <span class="account">Account 1</span> - Username : dj ,
-              <span class="pin">PIN : 1111</span></span
-            >
-            <span class="user">
-              <span class="account">Account 2</span> - Username : mk,<span
-                class="pin"
-              >
-                PIN : 2222</span
-              ></span
-            >
-          </p>
-          <h3>
-            Thank you for choosing Apex Secure Bank. Your financial experience
-            is our top priority!
-          </h3>
-        </div>
-      </div>
-      <div class="overlay"></div>
-    </section>
-    <script src="script.js"></script>
   </body>
 </html>
