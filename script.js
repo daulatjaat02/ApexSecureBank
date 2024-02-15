@@ -17,7 +17,7 @@ const account1 = {
     "2024-02-14T07:36:17.929Z",
   ],
   currency: "INR",
-  locale: "en-IN", // de-DE
+  locale: "en-IN",
 };
 
 const account2 = {
@@ -42,7 +42,6 @@ const account2 = {
 
 const accounts = [account1, account2];
 
-/////////////////////////////////////////////////
 // Elements
 const labelWelcome = document.querySelector(".welcome");
 const labelDate = document.querySelector(".date");
@@ -89,7 +88,7 @@ const formatCur = function (value, locale, currency) {
   }).format(value);
 };
 
-// display movementsDate
+// format movementsDate
 const formatMovemetsDate = (date, locale) => {
   const calcDaysPassed = function (date1, date2) {
     return Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
@@ -163,19 +162,14 @@ const displaySummery = (acc) => {
   labelSumInterest.textContent = formatCur(interest, acc.locale, acc.currency);
 };
 
-// Event handler
-let currentAccount, timer;
-
 const updateUI = function (acc) {
-  // display movements
+  // display movements , balance, summery
   displayMovements(acc);
-
-  // display balance
   calcPrintBalance(acc);
-
-  // display summery
   displaySummery(acc);
 };
+
+// current date
 const now = function () {
   const now = new Date();
   const options = {
@@ -192,6 +186,135 @@ const now = function () {
     options
   ).format(now);
 };
+
+const startLogOutTimer = function () {
+  let time = 300;
+
+  const tick = () => {
+    const min = String(Math.floor(time / 60)).padStart(2, 0);
+    const sec = String(time % 60).padStart(2, 0);
+
+    labelTimer.textContent = `${min}:${sec}`;
+
+    if (time === 0) {
+      clearTimeout(timer);
+      labelWelcome.textContent = `Log in to get started`;
+      containerApp.style.opacity = "0";
+      sessionStorage.removeItem("loggedIn");
+      sessionStorage.removeItem("username");
+    }
+
+    time--;
+  };
+  tick();
+  const timer = setInterval(tick, 1000);
+  return timer;
+};
+let currentAccount, timer;
+
+// login functions
+const loginfn = function (e) {
+  e.preventDefault();
+  currentAccount = accounts.find(
+    (acc) => acc.username === inputLoginUsername.value
+  );
+  if (currentAccount && currentAccount.pin === +inputLoginPin.value) {
+    sessionStorage.setItem("loggedIn", "true");
+    sessionStorage.setItem("username", currentAccount.username);
+
+    labelWelcome.textContent = ` Welcome Back ${
+      currentAccount.owner.split(" ")[0]
+    } `;
+
+    containerApp.style.opacity = "100";
+
+    now();
+
+    updateUI(currentAccount);
+
+    if (timer) clearTimeout(timer);
+    timer = startLogOutTimer();
+
+    inputLoginPin.value = inputLoginUsername.value = "";
+    inputLoginPin.blur();
+    inputLoginUsername.blur();
+  } else {
+    alert("Sorry! Invalid User & Pin");
+  }
+};
+
+// Transfer function
+const transferfn = function (e) {
+  e.preventDefault();
+  const amount = Math.floor(inputTransferAmount.value);
+  const receiveAcc = accounts.find(
+    (acc) => acc.username === inputTransferTo.value
+  );
+
+  inputTransferTo.value = inputTransferAmount.value = "";
+  if (
+    amount > 0 &&
+    receiveAcc &&
+    currentAccount.balance >= amount &&
+    receiveAcc.username !== currentAccount.username
+  ) {
+    currentAccount.movements.push(-amount);
+    receiveAcc.movements.push(amount);
+
+    currentAccount.movementsDates.push(new Date().toISOString());
+    receiveAcc.movementsDates.push(new Date().toISOString());
+
+    updateUI(currentAccount);
+
+    clearInterval(timer);
+    timer = startLogOutTimer();
+  }
+};
+
+// close fn
+const closefn = function (e) {
+  e.preventDefault();
+  if (
+    inputCloseUsername.value === currentAccount.username &&
+    +inputClosePin.value === currentAccount.pin
+  ) {
+    const index = accounts.findIndex(
+      (acc) => acc.username === currentAccount.username
+    );
+    accounts.splice(index, 1);
+    containerApp.style.opacity = "0";
+  }
+};
+
+// loan function
+const loanfn = function (e) {
+  e.preventDefault();
+
+  const amount = +inputLoanAmount.value;
+
+  if (
+    amount > 0 &&
+    currentAccount.movements.some((mov) => mov >= amount * 0.1)
+  ) {
+    setTimeout(() => {
+      currentAccount.movements.push(amount);
+      currentAccount.movementsDates.push(new Date().toISOString());
+      updateUI(currentAccount);
+      clearInterval(timer);
+      timer = startLogOutTimer();
+    }, 1000);
+  }
+  inputLoanAmount.value = "";
+};
+
+// sort function
+let sorted = false;
+const sortfn = function (e) {
+  e.preventDefault();
+  displayMovements(currentAccount, !sorted);
+  sorted = !sorted;
+};
+
 document.addEventListener("DOMContentLoaded", function () {
   const isLoggedIn = sessionStorage.getItem("loggedIn") === "true";
 
@@ -215,133 +338,8 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-const startLogOutTimer = function () {
-  //set time to 5 minutes
-  let time = 300;
-  //call the timer every second
-  const tick = () => {
-    const min = String(Math.floor(time / 60)).padStart(2, 0);
-    const sec = String(time % 60).padStart(2, 0);
-    //In each call, print the remaining time to UI
-    labelTimer.textContent = `${min}:${sec}`;
-
-    // When 0 second, stop timer and logOut user
-    if (time === 0) {
-      clearTimeout(timer);
-      labelWelcome.textContent = `Log in to get started`;
-      containerApp.style.opacity = "0";
-      sessionStorage.removeItem("loggedIn");
-      sessionStorage.removeItem("username");
-    }
-
-    // Decrese 1 sec
-    time--;
-  };
-  tick();
-  const timer = setInterval(tick, 1000);
-  return timer;
-};
-// Fake Login
-// currentAccount = account1;
-// updateUI(currentAccount);
-// containerApp.style.opacity = "100";
-
-btnLogin.addEventListener("click", function (e) {
-  e.preventDefault();
-  currentAccount = accounts.find(
-    (acc) => acc.username === inputLoginUsername.value
-  );
-  if (currentAccount && currentAccount.pin === +inputLoginPin.value) {
-    sessionStorage.setItem("loggedIn", "true");
-    sessionStorage.setItem("username", currentAccount.username);
-
-    // display UI and welcome message
-    labelWelcome.textContent = ` Welcome Back ${
-      currentAccount.owner.split(" ")[0]
-    } `;
-
-    containerApp.style.opacity = "100";
-
-    now();
-
-    // clear input fields
-    updateUI(currentAccount);
-    if (timer) clearTimeout(timer);
-    timer = startLogOutTimer();
-    inputLoginPin.value = inputLoginUsername.value = "";
-    inputLoginPin.blur();
-    inputLoginUsername.blur();
-  } else {
-    alert("Sorry! Invalid User & Pin");
-  }
-});
-
-// transfer
-btnTransfer.addEventListener("click", function (e) {
-  e.preventDefault();
-  const amount = Math.floor(inputTransferAmount.value);
-  const receiveAcc = accounts.find(
-    (acc) => acc.username === inputTransferTo.value
-  );
-  console.log(amount, receiveAcc);
-  inputTransferTo.value = inputTransferAmount.value = "";
-  if (
-    amount > 0 &&
-    receiveAcc &&
-    currentAccount.balance >= amount &&
-    receiveAcc.username !== currentAccount.username
-  ) {
-    currentAccount.movements.push(-amount);
-    receiveAcc.movements.push(amount);
-
-    // Add Date
-    currentAccount.movementsDates.push(new Date().toISOString());
-    receiveAcc.movementsDates.push(new Date().toISOString());
-    updateUI(currentAccount);
-    clearInterval(timer);
-    timer = startLogOutTimer();
-  }
-});
-
-// close account
-btnClose.addEventListener("click", function (e) {
-  e.preventDefault();
-  if (
-    inputCloseUsername.value === currentAccount.username &&
-    +inputClosePin.value === currentAccount.pin
-  ) {
-    const index = accounts.findIndex(
-      (acc) => acc.username === currentAccount.username
-    );
-    accounts.splice(index, 1);
-    containerApp.style.opacity = "0";
-  }
-});
-
-// Loan
-btnLoan.addEventListener("click", function (e) {
-  e.preventDefault();
-
-  const amount = +inputLoanAmount.value;
-
-  if (
-    amount > 0 &&
-    currentAccount.movements.some((mov) => mov >= amount * 0.1)
-  ) {
-    setTimeout(() => {
-      currentAccount.movements.push(amount);
-      currentAccount.movementsDates.push(new Date().toISOString());
-      updateUI(currentAccount);
-      clearInterval(timer);
-      timer = startLogOutTimer();
-    }, 1000);
-  }
-  inputLoanAmount.value = "";
-});
-
-let sorted = false;
-btnSort.addEventListener("click", function (e) {
-  e.preventDefault();
-  displayMovements(currentAccount, !sorted);
-  sorted = !sorted;
-});
+btnLogin.addEventListener("click", loginfn);
+btnTransfer.addEventListener("click", transferfn);
+btnClose.addEventListener("click", closefn);
+btnLoan.addEventListener("click", loanfn);
+btnSort.addEventListener("click", sortfn);
