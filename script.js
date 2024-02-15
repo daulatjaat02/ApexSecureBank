@@ -176,7 +176,22 @@ const updateUI = function (acc) {
   // display summery
   displaySummery(acc);
 };
+const now = function () {
+  const now = new Date();
+  const options = {
+    hour: "numeric",
+    minute: "numeric",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    weekday: "long",
+  };
 
+  labelDate.textContent = new Intl.DateTimeFormat(
+    currentAccount.locale,
+    options
+  ).format(now);
+};
 document.addEventListener("DOMContentLoaded", function () {
   const isLoggedIn = sessionStorage.getItem("loggedIn") === "true";
 
@@ -192,6 +207,8 @@ document.addEventListener("DOMContentLoaded", function () {
     updateUI(currentAccount);
     inputLoginPin.blur();
     inputLoginUsername.blur();
+
+    now();
 
     if (timer) clearInterval(timer);
     timer = startLogOutTimer();
@@ -245,20 +262,7 @@ btnLogin.addEventListener("click", function (e) {
 
     containerApp.style.opacity = "100";
 
-    const now = new Date();
-    const options = {
-      hour: "numeric",
-      minute: "numeric",
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-      weekday: "long",
-    };
-
-    labelDate.textContent = new Intl.DateTimeFormat(
-      currentAccount.locale,
-      options
-    ).format(now);
+    now();
 
     // clear input fields
     updateUI(currentAccount);
